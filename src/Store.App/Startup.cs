@@ -13,6 +13,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Store.Data.Context;
+using Store.Business.Interfaces;
+using Store.Data.Repository;
 
 namespace Store.App
 {
@@ -39,6 +41,12 @@ namespace Store.App
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddScoped<StoreDbContext>();
+            services.AddScoped<IAddressRepository, AddressRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<ISupplierRepository, SupplierRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
