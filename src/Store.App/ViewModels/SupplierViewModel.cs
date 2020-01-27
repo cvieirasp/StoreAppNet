@@ -21,7 +21,7 @@ namespace Store.App.ViewModels
         public string Document { get; set; }
 
         [DisplayName("Tipo")]
-        public byte SupplierType { get; set; }
+        public int SupplierType { get; set; }
 
         public AddressViewModel Address { get; set; }
 

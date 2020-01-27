@@ -28,6 +28,7 @@ namespace Store.App.ViewModels
         [DisplayName("Imagem")]
         public string Image { get; set; }
 
+        [DisplayName("Imagem")]
         public IFormFile ImageUpload { get; set; }
 
         [Required(ErrorMessage = "O campo Valor é obrigatório")]

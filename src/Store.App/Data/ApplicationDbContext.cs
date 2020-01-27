@@ -11,5 +11,6 @@ namespace Store.App.Data
         {
 
         }
+        public DbSet<Store.App.ViewModels.AddressViewModel> AddressViewModel { get; set; }
     }
 }
