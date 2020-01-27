@@ -14,7 +14,5 @@ namespace Store.App.ViewModels
         [StringLength(50, ErrorMessage = "O campo Nome precisa ter entre {2} e {1} caracteres", MinimumLength = 2)]
         [DisplayName("Nome")]
         public string Name { get; set; }
-
-        public IEnumerable<ProductViewModel> Products { get; set; }
     }
 }

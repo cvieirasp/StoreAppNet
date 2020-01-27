@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
@@ -9,6 +10,10 @@ namespace Store.App.ViewModels
     {
         [Key]
         public Guid Id { get; set; }
+
+        [Required(ErrorMessage = "O campo Fornecedor é obrigatório")]
+        [DisplayName("Fornecedor")]
+        public Guid SupplierId { get; set; }
 
         [Required(ErrorMessage = "O campo Nome é obrigatório")]
         [StringLength(200, ErrorMessage = "O campo Nome precisa ter entre {2} e {1} caracteres", MinimumLength = 2)]
@@ -41,5 +46,8 @@ namespace Store.App.ViewModels
         public SupplierViewModel Supplier { get; set; }
 
         public CategoryViewModel Category { get; set; }
+
+
+        public IEnumerable<SupplierViewModel> Suppliers { get; set; }
     }
 }
