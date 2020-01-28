@@ -8,13 +8,19 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form enctype="multipart/form-data" asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="SupplierId" class="control-label"></label>
-                <select asp-for="SupplierId" class="form-control" asp-items="ViewBag.SupplierId"></select>
-                <span asp-validation-for="SupplierId" class="text-danger"></span>
+                <label asp-for="Supplier.Name" class="control-label"></label>
+                <p><strong>@Model.Supplier.Name</strong></p>
+            </div>
+            <div class="form-group">
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" class="form-control" asp-items="@(new SelectList(Model.Categories, "Id", "Name"))">
+                    <option></option>
+                </select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
@@ -27,9 +33,19 @@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Image" class="control-label"></label>
-                <input asp-for="Image" class="form-control" />
-                <span asp-validation-for="Image" class="text-danger"></span>
+                <label class="control-label">Imagem</label><br />
+                <img src="~/images/@Model.Image" alt="@Model.Image" style="width: 70px; height: 100px;" />
+            </div>
+            <div class="form-group">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="inputGroupFileAddon">Upload</span>
+                    </div>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="ImageUpload" asp-for="ImageUpload" aria-describedby="inputGroupFileAddon">
+                        <label class="custom-file-label" id="img_name" for="ImageUpload">Selecione um Arquivo</label>
+                    </div>
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="Value" class="control-label"></label>
@@ -38,13 +54,13 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Active" /> 
+                    <input class="form-check-input" asp-for="Active" />
                     @Html.DisplayNameFor(model => model.Active)
                 </label>
             </div>
             <div class="form-group">
                 <input type="submit" value="Salvar" class="btn btn-primary" />
-                <a class="btn btn-info" asp-action="Index">Voltar</a>
+                <a class="btn btn-info" href="javascript:window.history.back();">Voltar</a>
             </div>
         </form>
     </div>
@@ -52,4 +68,11 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        $("#ImageUpload").change(function () {
+            $("#img_name").text(this.files[0].name);
+            $("#img_name")[0].style.display = 'block';
+        });
+    </script>
 }

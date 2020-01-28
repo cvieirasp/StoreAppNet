@@ -42,7 +42,7 @@ namespace Store.App.Controllers
         // GET: Products/Create
         public async Task<IActionResult> Create()
         {
-            var productViewModel = await SetSuppliersAndCategories(new ProductViewModel());
+            var productViewModel = await SetCategories(await SetSuppliers(new ProductViewModel()));
             return View(productViewModel);
         }
 
@@ -51,7 +51,7 @@ namespace Store.App.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductViewModel productViewModel)
         {
-            productViewModel = await SetSuppliersAndCategories(productViewModel);
+            productViewModel = await SetSuppliers(productViewModel);
             if (!ModelState.IsValid) return RedirectToAction("Index");
 
             string prefixFile = Guid.NewGuid() + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_";
@@ -71,7 +71,7 @@ namespace Store.App.Controllers
         // GET: Products/Edit/5
         public async Task<IActionResult> Edit(Guid id)
         {
-            var productViewModel = await GetWithSupplier(id);
+            var productViewModel = await SetCategories(await GetWithSupplier(id));
             if (productViewModel == null) return NotFound();
             return View(productViewModel);
         }
@@ -82,8 +82,30 @@ namespace Store.App.Controllers
         public async Task<IActionResult> Edit(Guid id, ProductViewModel productViewModel)
         {
             if (id != productViewModel.Id) return NotFound();
+
+            var productViewModelUpdated = await GetWithSupplier(id);
+            productViewModel.Supplier = productViewModelUpdated.Supplier;
+            productViewModel.Image = productViewModelUpdated.Image;
+
             if (!ModelState.IsValid) return View(productViewModel);
-            var product = _mapper.Map<Product>(productViewModel);
+
+            if (productViewModel.ImageUpload != null)
+            {
+                string prefixFile = Guid.NewGuid() + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_";
+                string fileName = prefixFile + productViewModel.ImageUpload.FileName;
+
+                if (!await UploadFile(productViewModel.ImageUpload, fileName))
+                    return View(productViewModel);
+
+                productViewModel.Image = fileName;
+            }
+
+            productViewModelUpdated.Name = productViewModel.Name;
+            productViewModelUpdated.Description = productViewModel.Description;
+            productViewModelUpdated.Value = productViewModel.Value;
+            productViewModelUpdated.Active = productViewModel.Active;
+
+            var product = _mapper.Map<Product>(productViewModelUpdated);
             await _repository.Update(product);
             return RedirectToAction("Index");
         }
@@ -114,9 +136,14 @@ namespace Store.App.Controllers
             return product;
         }
 
-        private async Task<ProductViewModel> SetSuppliersAndCategories(ProductViewModel productViewModel)
+        private async Task<ProductViewModel> SetSuppliers(ProductViewModel productViewModel)
         {
             productViewModel.Suppliers = _mapper.Map<IEnumerable<SupplierViewModel>>(await _supRepository.GetAll());
+            return productViewModel;
+        }
+
+        private async Task<ProductViewModel> SetCategories(ProductViewModel productViewModel)
+        {
             productViewModel.Categories = _mapper.Map<IEnumerable<CategoryViewModel>>(await _catRepository.GetAll());
             return productViewModel;
         }
