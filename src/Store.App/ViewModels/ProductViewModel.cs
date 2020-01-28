@@ -15,6 +15,10 @@ namespace Store.App.ViewModels
         [DisplayName("Fornecedor")]
         public Guid SupplierId { get; set; }
 
+        [Required(ErrorMessage = "O campo Categoria é obrigatório")]
+        [DisplayName("Categoria")]
+        public Guid CategoryId { get; set; }
+
         [Required(ErrorMessage = "O campo Nome é obrigatório")]
         [StringLength(200, ErrorMessage = "O campo Nome precisa ter entre {2} e {1} caracteres", MinimumLength = 2)]
         [DisplayName("Nome")]
@@ -48,6 +52,7 @@ namespace Store.App.ViewModels
 
         public CategoryViewModel Category { get; set; }
 
+        public IEnumerable<CategoryViewModel> Categories { get; set; }
 
         public IEnumerable<SupplierViewModel> Suppliers { get; set; }
     }

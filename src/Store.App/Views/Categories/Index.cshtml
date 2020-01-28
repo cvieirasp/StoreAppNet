@@ -1,16 +1,13 @@
 ﻿@model IEnumerable<Store.App.ViewModels.CategoryViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Lista de Categorias";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
+<h1>@ViewData["Title"]</h1>
+<p><a class="btn btn-info" asp-action="Create">Nova</a></p>
+<table class="table table-striped table-hover">
+    <thead class="thead-dark">
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
@@ -19,17 +16,18 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td class="text-right">
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id"><span class="fa fa-search"></span></a>
+                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id"><span class="fa fa-pencil-alt"></span></a>
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><span class="fa fa-trash-alt"></span></a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

@@ -30,7 +30,7 @@
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Image)
+                    <img src="~/images/@item.Image" style="width: 70px; height: 100px;" />
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
@@ -44,7 +44,7 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.Active)
                 </td>
-                <td>
+                <td class="text-right">
                     <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id"><span class="fa fa-search"></span></a>
                     <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id"><span class="fa fa-pencil-alt"></span></a>
                     <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><span class="fa fa-trash-alt"></span></a>

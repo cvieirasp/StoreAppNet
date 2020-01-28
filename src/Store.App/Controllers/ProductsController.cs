@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Store.App.ViewModels;
 using Store.Business.Interfaces;
@@ -13,11 +14,13 @@ namespace Store.App.Controllers
     {
         private readonly IProductRepository _repository;
         private readonly ISupplierRepository _supRepository;
+        private readonly ICategoryRepository _catRepository;
         private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository repository, ISupplierRepository supRepository, IMapper mapper)
+        public ProductsController(IProductRepository repository, ICategoryRepository catRepository, ISupplierRepository supRepository, IMapper mapper)
         {
             _repository = repository;
+            _catRepository = catRepository;
             _supRepository = supRepository;
             _mapper = mapper;
         }
@@ -39,7 +42,7 @@ namespace Store.App.Controllers
         // GET: Products/Create
         public async Task<IActionResult> Create()
         {
-            var productViewModel = await SetSuppliers(new ProductViewModel());
+            var productViewModel = await SetSuppliersAndCategories(new ProductViewModel());
             return View(productViewModel);
         }
 
@@ -48,10 +51,20 @@ namespace Store.App.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(ProductViewModel productViewModel)
         {
-            productViewModel = await SetSuppliers(productViewModel);
+            productViewModel = await SetSuppliersAndCategories(productViewModel);
             if (!ModelState.IsValid) return RedirectToAction("Index");
+
+            string prefixFile = Guid.NewGuid() + "_" + DateTime.Now.ToString("yyyyMMdd_HHmmss") + "_";
+            string fileName = prefixFile + productViewModel.ImageUpload.FileName;
+
+            if (!await UploadFile(productViewModel.ImageUpload, fileName))
+                return View(productViewModel);
+
+            productViewModel.Image = fileName;
+
             var product = _mapper.Map<Product>(productViewModel);
             await _repository.Add(product);
+
             return RedirectToAction("Index");
         }
 
@@ -101,10 +114,28 @@ namespace Store.App.Controllers
             return product;
         }
 
-        private async Task<ProductViewModel> SetSuppliers(ProductViewModel productViewModel)
+        private async Task<ProductViewModel> SetSuppliersAndCategories(ProductViewModel productViewModel)
         {
             productViewModel.Suppliers = _mapper.Map<IEnumerable<SupplierViewModel>>(await _supRepository.GetAll());
+            productViewModel.Categories = _mapper.Map<IEnumerable<CategoryViewModel>>(await _catRepository.GetAll());
             return productViewModel;
+        }
+
+        private async Task<bool> UploadFile(IFormFile file, string fileName)
+        {
+            if (file?.Length <= 0) return false;
+            var path = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+            
+            if (System.IO.File.Exists(path))
+            {
+                ModelState.AddModelError(string.Empty, "Já existe um arquivo com este nome!");
+                return false;
+            }
+
+            using (var stream = new System.IO.FileStream(path, System.IO.FileMode.Create))
+                await file.CopyToAsync(stream);
+
+            return System.IO.File.Exists(path);
         }
     }
 }
