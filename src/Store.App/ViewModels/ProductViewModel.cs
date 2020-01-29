@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using Store.App.Extensions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -36,8 +37,9 @@ namespace Store.App.ViewModels
         public IFormFile ImageUpload { get; set; }
 
         [Required(ErrorMessage = "O campo Valor é obrigatório")]
+        [Currency]
         [DisplayName("Valor")]
-        public string Value { get; set; }
+        public decimal Value { get; set; }
 
         [ScaffoldColumn(false)]
         public DateTime Created { get; set; }
