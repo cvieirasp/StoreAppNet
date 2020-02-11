@@ -42,6 +42,7 @@ namespace Store.App.ViewModels
         public decimal Value { get; set; }
 
         [ScaffoldColumn(false)]
+        [DisplayName("Data de Cadastro")]
         public DateTime Created { get; set; }
 
         [ScaffoldColumn(false)]
