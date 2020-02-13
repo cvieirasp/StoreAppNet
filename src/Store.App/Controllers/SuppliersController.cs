@@ -12,11 +12,13 @@ namespace Store.App.Controllers
     public class SuppliersController : BaseController
     {
         private readonly ISupplierRepository _repository;
+        private readonly IAddressRepository _addressRepository;
         private readonly IMapper _mapper;
 
-        public SuppliersController(ISupplierRepository repository, IMapper mapper)
+        public SuppliersController(ISupplierRepository repository, IAddressRepository addressRepository, IMapper mapper)
         {
             _repository = repository;
+            _addressRepository = addressRepository;
             _mapper = mapper;
         }
 
@@ -88,6 +90,35 @@ namespace Store.App.Controllers
             if (supplierViewModel == null) return NotFound();
             await _repository.Delete(id);
             return RedirectToAction("Index");
+        }
+
+        public async Task<IActionResult> UpdateAddress(Guid id)
+        {
+            var supplier = await GetSupplierWithAddress(id);
+            if (supplier == null)
+                return NotFound();
+            return PartialView("_UpdateAddress", new SupplierViewModel { Address = supplier.Address });
+        }
+
+        public async Task<IActionResult> GetAddress(Guid id)
+        {
+            var supplier = await GetSupplierWithAddress(id);
+            if (supplier == null)
+                return NotFound();
+            return PartialView("_AddressDetails", supplier);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateAddress(SupplierViewModel supplierViewModel)
+        {
+            ModelState.Remove("Name");
+            ModelState.Remove("Document");
+            if (!ModelState.IsValid)
+                return PartialView("_UpdateAddress", supplierViewModel);
+            await _addressRepository.Update(_mapper.Map<Address>(supplierViewModel.Address));
+            var url = Url.Action("GetAddress", "Suppliers", new { id = supplierViewModel.Address.SupplierId });
+            return Json(new { success = true, url });
         }
 
         private async Task<SupplierViewModel> GetSupplierWithAddress(Guid id)
