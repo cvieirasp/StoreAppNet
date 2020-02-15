@@ -22,12 +22,14 @@ namespace Store.App.Controllers
 
 
         // GET: Categories
+        [Route("lista-de-categorias")]
         public async Task<IActionResult> Index()
         {
             return View(_mapper.Map<IEnumerable<CategoryViewModel>>(await _repository.GetAll()));
         }
 
         // GET: Categories/Details/5
+        [Route("dados-da-categoria/{id:guid}")]
         public async Task<IActionResult> Details(Guid id)
         {
             var categoryViewModel = _mapper.Map<CategoryViewModel>(await _repository.Get(id));
@@ -36,12 +38,14 @@ namespace Store.App.Controllers
         }
 
         // GET: Categories/Create
+        [Route("nova-categoria")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: Categories/Create
+        [Route("nova-categoria")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryViewModel categoryViewModel)
@@ -53,6 +57,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Categories/Edit/5
+        [Route("editar-categoria/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
             var categoryViewModel = _mapper.Map<CategoryViewModel>(await _repository.Get(id));
@@ -61,6 +66,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Categories/Edit/5
+        [Route("editar-categoria/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, CategoryViewModel categoryViewModel)
@@ -73,6 +79,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Categories/Delete/5
+        [Route("remover-categoria/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var categoryViewModel = _mapper.Map<CategoryViewModel>(await _repository.Get(id));
@@ -81,6 +88,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Categories/Delete/5
+        [Route("remover-categoria/{id:guid}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
