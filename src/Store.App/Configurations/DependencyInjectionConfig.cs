@@ -2,6 +2,8 @@
 using Microsoft.Extensions.DependencyInjection;
 using Store.App.Extensions;
 using Store.Business.Interfaces;
+using Store.Business.Notifications;
+using Store.Business.Services;
 using Store.Data.Context;
 using Store.Data.Repository;
 
@@ -17,7 +19,14 @@ namespace Store.App.Configurations
             services.AddScoped<IProductRepository, ProductRepository>();
             services.AddScoped<ISupplierRepository, SupplierRepository>();
 
+            services.AddScoped<INotificator, Notificator>();
+
+            services.AddScoped<ISupplierService, SupplierService>();
+            services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+
             services.AddSingleton<IValidationAttributeAdapterProvider, CurrencyValidationAttributeAdapterProvider>();
+
 
             return services;
         }

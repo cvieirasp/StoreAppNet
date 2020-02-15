@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace Store.Business.Interfaces
 {
-    public interface ICategoryService
+    public interface ICategoryService : IDisposable
     {
         Task Add(Category category);
         Task Update(Category category);

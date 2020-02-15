@@ -12,13 +12,14 @@ namespace Store.App.Controllers
     public class SuppliersController : BaseController
     {
         private readonly ISupplierRepository _repository;
-        private readonly IAddressRepository _addressRepository;
+        private readonly ISupplierService _service;
         private readonly IMapper _mapper;
 
-        public SuppliersController(ISupplierRepository repository, IAddressRepository addressRepository, IMapper mapper)
+        public SuppliersController(ISupplierRepository repository, ISupplierService service, IMapper mapper, INotificator notificator)
+            :base(notificator)
         {
             _repository = repository;
-            _addressRepository = addressRepository;
+            _service = service;
             _mapper = mapper;
         }
 
@@ -53,7 +54,11 @@ namespace Store.App.Controllers
         {
             if (!ModelState.IsValid) return View(supplierViewModel);
             var supplier = _mapper.Map<Supplier>(supplierViewModel);
-            await _repository.Add(supplier);
+            await _service.Add(supplier);
+
+            if (!ValidOperation())
+                return View(supplierViewModel);
+
             return RedirectToAction("Index");
         }
 
@@ -75,7 +80,11 @@ namespace Store.App.Controllers
             if (id != supplierViewModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(supplierViewModel);
             var supplier = _mapper.Map<Supplier>(supplierViewModel);
-            await _repository.Update(supplier);
+            await _service.Update(supplier);
+
+            if (!ValidOperation())
+                return View(await GetSupplierWithAddressAndProducts(id));
+
             return RedirectToAction("Index");
         }
 
@@ -96,7 +105,13 @@ namespace Store.App.Controllers
         {
             var supplierViewModel = await GetSupplierWithAddress(id);
             if (supplierViewModel == null) return NotFound();
-            await _repository.Delete(id);
+            await _service.Delete(id);
+
+            if (!ValidOperation())
+                return View(supplierViewModel);
+
+            TempData["Success"] = "Fornecedor excluido com sucesso!";
+
             return RedirectToAction("Index");
         }
 
@@ -127,7 +142,11 @@ namespace Store.App.Controllers
             ModelState.Remove("Document");
             if (!ModelState.IsValid)
                 return PartialView("_UpdateAddress", supplierViewModel);
-            await _addressRepository.Update(_mapper.Map<Address>(supplierViewModel.Address));
+            await _service.UpdateAddress(_mapper.Map<Address>(supplierViewModel.Address));
+
+            if (!ValidOperation())
+                return PartialView("_UpdateAddress", supplierViewModel);
+
             var url = Url.Action("GetAddress", "Suppliers", new { id = supplierViewModel.Address.SupplierId });
             return Json(new { success = true, url });
         }

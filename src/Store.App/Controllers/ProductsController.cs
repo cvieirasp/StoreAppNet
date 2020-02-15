@@ -15,13 +15,16 @@ namespace Store.App.Controllers
         private readonly IProductRepository _repository;
         private readonly ISupplierRepository _supRepository;
         private readonly ICategoryRepository _catRepository;
+        private readonly IProductService _service;
         private readonly IMapper _mapper;
 
-        public ProductsController(IProductRepository repository, ICategoryRepository catRepository, ISupplierRepository supRepository, IMapper mapper)
+        public ProductsController(IProductRepository repository, ICategoryRepository catRepository, ISupplierRepository supRepository, 
+            IProductService service, IMapper mapper, INotificator notificator) : base(notificator)
         {
             _repository = repository;
             _catRepository = catRepository;
             _supRepository = supRepository;
+            _service = service;
             _mapper = mapper;
         }
 
@@ -67,7 +70,10 @@ namespace Store.App.Controllers
             productViewModel.Image = fileName;
 
             var product = _mapper.Map<Product>(productViewModel);
-            await _repository.Add(product);
+            await _service.Add(product);
+
+            if (!ValidOperation())
+                return View(productViewModel);
 
             return RedirectToAction("Index");
         }
@@ -112,7 +118,11 @@ namespace Store.App.Controllers
             productViewModelUpdated.Active = productViewModel.Active;
 
             var product = _mapper.Map<Product>(productViewModelUpdated);
-            await _repository.Update(product);
+            await _service.Update(product);
+
+            if (!ValidOperation())
+                return View(productViewModel);
+
             return RedirectToAction("Index");
         }
 
@@ -133,7 +143,13 @@ namespace Store.App.Controllers
         {
             var productViewModel = await GetWithSupplier(id);
             if (productViewModel == null) return NotFound();
-            await _repository.Delete(id);
+            await _service.Delete(id);
+
+            if (!ValidOperation())
+                return View(productViewModel);
+
+            TempData["Success"] = "Produto excluido com sucesso!";
+
             return RedirectToAction("Index");
         }
 

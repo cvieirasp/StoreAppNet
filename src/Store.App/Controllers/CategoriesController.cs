@@ -12,11 +12,14 @@ namespace Store.App.Controllers
     public class CategoriesController : BaseController
     {
         private readonly ICategoryRepository _repository;
+        private readonly ICategoryService _service;
         private readonly IMapper _mapper;
 
-        public CategoriesController(ICategoryRepository repository, IMapper mapper)
+        public CategoriesController(ICategoryRepository repository, ICategoryService service, IMapper mapper, INotificator notificator)
+            :base (notificator)
         {
             _repository = repository;
+            _service = service;
             _mapper = mapper;
         }
 
@@ -52,7 +55,11 @@ namespace Store.App.Controllers
         {
             if (!ModelState.IsValid) return View(categoryViewModel);
             var category = _mapper.Map<Category>(categoryViewModel);
-            await _repository.Add(category);
+            await _service.Add(category);
+
+            if (!ValidOperation())
+                return View(categoryViewModel);
+
             return RedirectToAction("Index");
         }
 
@@ -74,7 +81,11 @@ namespace Store.App.Controllers
             if (id != categoryViewModel.Id) return NotFound();
             if (!ModelState.IsValid) return View(categoryViewModel);
             var category = _mapper.Map<Category>(categoryViewModel);
-            await _repository.Update(category);
+            await _service.Update(category);
+
+            if (!ValidOperation())
+                return View(categoryViewModel);
+
             return RedirectToAction("Index");
         }
 
@@ -95,7 +106,13 @@ namespace Store.App.Controllers
         {
             var categoryViewModel = _mapper.Map<CategoryViewModel>(await _repository.Get(id));
             if (categoryViewModel == null) return NotFound();
-            await _repository.Delete(id);
+            await _service.Delete(id);
+
+            if (!ValidOperation())
+                return View(categoryViewModel);
+
+            TempData["Success"] = "Categoria excluida com sucesso!";
+
             return RedirectToAction("Index");
         }
     }

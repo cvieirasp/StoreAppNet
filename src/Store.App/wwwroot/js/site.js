@@ -93,3 +93,7 @@ function GetCEP() {
         });
     });
 }
+
+$(document).ready(function () {
+    $("messageBox").fadeOut(2500);
+})
