@@ -8,7 +8,7 @@
 <h1>@ViewData["Title"]</h1>
 <vc:summary></vc:summary>
 <hr />
-<p><a class="btn btn-info" asp-action="Create">Novo</a></p>
+<p><a class="btn btn-info" suppress-by-claim-name="Supplier" suppress-by-claim-value="Add" asp-action="Create">Novo</a></p>
 <table class="table table-striped table-hover">
     <thead class="thead-dark">
         <tr>
@@ -38,9 +38,15 @@
                     @Html.DisplayFor(modelItem => item.Active)
                 </td>
                 <td class="text-right">
-                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id"><span class="fa fa-search"></span></a>
-                    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@item.Id"><span class="fa fa-pencil-alt"></span></a>
-                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id"><span class="fa fa-trash-alt"></span></a>
+                    <a class="btn btn-info" asp-action="Details" asp-route-id="@item.Id">
+                        <span class="fa fa-search"></span>
+                    </a>
+                    <a class="btn btn-warning" disable-by-claim-name="Supplier" disable-by-claim-value="Edit" asp-action="Edit" asp-route-id="@item.Id">
+                        <span class="fa fa-pencil-alt"></span>
+                    </a>
+                    <a class="btn btn-danger" disable-by-claim-name="Supplier" disable-by-claim-value="Delete" asp-action="Delete" asp-route-id="@item.Id">
+                        <span class="fa fa-trash-alt"></span>
+                    </a>
                 </td>
             </tr>
         }

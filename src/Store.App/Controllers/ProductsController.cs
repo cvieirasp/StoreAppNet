@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Store.App.Extensions;
 using Store.App.ViewModels;
 using Store.Business.Interfaces;
 using Store.Business.Models;
 
 namespace Store.App.Controllers
 {
+    [Authorize]
     public class ProductsController : BaseController
     {
         private readonly IProductRepository _repository;
@@ -29,6 +32,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Products
+        [AllowAnonymous]
         [Route("lista-de-produtos")]
         public async Task<IActionResult> Index()
         {
@@ -36,6 +40,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Products/Details/5
+        [AllowAnonymous]
         [Route("dados-do-produto/{id:guid}")]
         public async Task<IActionResult> Details(Guid id)
         {
@@ -45,6 +50,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Products/Create
+        [ClaimsAuthorize("Product", "Add")]
         [Route("novo-produto")]
         public async Task<IActionResult> Create()
         {
@@ -53,6 +59,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Products/Create
+        [ClaimsAuthorize("Product", "Add")]
         [Route("novo-produto")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -79,6 +86,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Products/Edit/5
+        [ClaimsAuthorize("Product", "Edit")]
         [Route("editar-produto/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -88,6 +96,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Products/Edit/5
+        [ClaimsAuthorize("Product", "Edit")]
         [Route("editar-produto/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -127,6 +136,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Products/Delete/5
+        [ClaimsAuthorize("Product", "Delete")]
         [Route("remover-produto/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -136,6 +146,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Products/Delete/5
+        [ClaimsAuthorize("Product", "Delete")]
         [Route("remover-produto/{id:guid}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

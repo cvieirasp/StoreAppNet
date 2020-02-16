@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Store.App.Extensions;
 using Store.App.ViewModels;
 using Store.Business.Interfaces;
 using Store.Business.Models;
 
 namespace Store.App.Controllers
 {
+    [Authorize]
     public class CategoriesController : BaseController
     {
         private readonly ICategoryRepository _repository;
@@ -41,6 +44,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Categories/Create
+        [ClaimsAuthorize("Category", "Add")]
         [Route("nova-categoria")]
         public IActionResult Create()
         {
@@ -48,6 +52,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Categories/Create
+        [ClaimsAuthorize("Category", "Add")]
         [Route("nova-categoria")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -64,6 +69,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Categories/Edit/5
+        [ClaimsAuthorize("Category", "Edit")]
         [Route("editar-categoria/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -73,6 +79,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Categories/Edit/5
+        [ClaimsAuthorize("Category", "Edit")]
         [Route("editar-categoria/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -90,6 +97,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Categories/Delete/5
+        [ClaimsAuthorize("Category", "Delete")]
         [Route("remover-categoria/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -99,6 +107,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Categories/Delete/5
+        [ClaimsAuthorize("Category", "Delete")]
         [Route("remover-categoria/{id:guid}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]

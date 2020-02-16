@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Store.App.Extensions;
 using Store.App.ViewModels;
 using Store.Business.Interfaces;
 using Store.Business.Models;
 
 namespace Store.App.Controllers
 {
+    [Authorize]
     public class SuppliersController : BaseController
     {
         private readonly ISupplierRepository _repository;
@@ -24,6 +27,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Suppliers
+        [AllowAnonymous]
         [Route("lista-de-fornecedores")]
         public async Task<IActionResult> Index()
         {
@@ -31,6 +35,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Suppliers/Details/5
+        [AllowAnonymous]
         [Route("dados-do-fornecedor/{id:guid}")]
         public async Task<IActionResult> Details(Guid id)
         {
@@ -40,6 +45,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Suppliers/Create
+        [ClaimsAuthorize("Supplier", "Add")]
         [Route("novo-fornecedor")]
         public IActionResult Create()
         {
@@ -47,6 +53,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Suppliers/Create
+        [ClaimsAuthorize("Supplier", "Add")]
         [Route("novo-fornecedor")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -63,6 +70,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Suppliers/Edit/5
+        [ClaimsAuthorize("Supplier", "Edit")]
         [Route("editar-fornecedor/{id:guid}")]
         public async Task<IActionResult> Edit(Guid id)
         {
@@ -72,6 +80,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Suppliers/Edit/5
+        [ClaimsAuthorize("Supplier", "Edit")]
         [Route("editar-fornecedor/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -89,6 +98,7 @@ namespace Store.App.Controllers
         }
 
         // GET: Suppliers/Delete/5
+        [ClaimsAuthorize("Supplier", "Delete")]
         [Route("remover-fornecedor/{id:guid}")]
         public async Task<IActionResult> Delete(Guid id)
         {
@@ -98,6 +108,7 @@ namespace Store.App.Controllers
         }
 
         // POST: Suppliers/Delete/5
+        [ClaimsAuthorize("Supplier", "Delete")]
         [Route("remover-fornecedor/{id:guid}")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
@@ -115,6 +126,7 @@ namespace Store.App.Controllers
             return RedirectToAction("Index");
         }
 
+        [ClaimsAuthorize("Supplier", "Edit")]
         [Route("atualizar-endereco-fornecedor/{id:guid}")]
         public async Task<IActionResult> UpdateAddress(Guid id)
         {
@@ -124,6 +136,7 @@ namespace Store.App.Controllers
             return PartialView("_UpdateAddress", new SupplierViewModel { Address = supplier.Address });
         }
 
+        [AllowAnonymous]
         [Route("obter-endereco-fornecedor/{id:guid}")]
         public async Task<IActionResult> GetAddress(Guid id)
         {
@@ -133,6 +146,7 @@ namespace Store.App.Controllers
             return PartialView("_AddressDetails", supplier);
         }
 
+        [ClaimsAuthorize("Supplier", "Edit")]
         [Route("atualizar-endereco-fornecedor/{id:guid}")]
         [HttpPost]
         [ValidateAntiForgeryToken]
