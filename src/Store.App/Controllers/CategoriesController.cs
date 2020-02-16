@@ -55,7 +55,7 @@ namespace Store.App.Controllers
         [ClaimsAuthorize("Category", "Add")]
         [Route("nova-categoria")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CategoryViewModel categoryViewModel)
         {
             if (!ModelState.IsValid) return View(categoryViewModel);
@@ -82,7 +82,7 @@ namespace Store.App.Controllers
         [ClaimsAuthorize("Category", "Edit")]
         [Route("editar-categoria/{id:guid}")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, CategoryViewModel categoryViewModel)
         {
             if (id != categoryViewModel.Id) return NotFound();
@@ -110,7 +110,7 @@ namespace Store.App.Controllers
         [ClaimsAuthorize("Category", "Delete")]
         [Route("remover-categoria/{id:guid}")]
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var categoryViewModel = _mapper.Map<CategoryViewModel>(await _repository.Get(id));

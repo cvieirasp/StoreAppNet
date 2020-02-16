@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Store.App.Configurations
 {
@@ -19,6 +20,8 @@ namespace Store.App.Configurations
                 options.ModelBindingMessageProvider.SetValueIsInvalidAccessor((x) => "O valor fornecido é inválido para {0}.");
                 options.ModelBindingMessageProvider.SetValueMustBeANumberAccessor(x => "O campo {0} deve ser um número.");
                 options.ModelBindingMessageProvider.SetValueMustNotBeNullAccessor(x => "O valor nulo é inválido.");
+
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
             }).AddDataAnnotationsLocalization().AddViewLocalization();
 
             return services;

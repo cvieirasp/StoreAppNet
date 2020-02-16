@@ -56,7 +56,7 @@ namespace Store.App.Controllers
         [ClaimsAuthorize("Supplier", "Add")]
         [Route("novo-fornecedor")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SupplierViewModel supplierViewModel)
         {
             if (!ModelState.IsValid) return View(supplierViewModel);
@@ -83,7 +83,7 @@ namespace Store.App.Controllers
         [ClaimsAuthorize("Supplier", "Edit")]
         [Route("editar-fornecedor/{id:guid}")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, SupplierViewModel supplierViewModel)
         {
             if (id != supplierViewModel.Id) return NotFound();
@@ -111,7 +111,7 @@ namespace Store.App.Controllers
         [ClaimsAuthorize("Supplier", "Delete")]
         [Route("remover-fornecedor/{id:guid}")]
         [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
             var supplierViewModel = await GetSupplierWithAddress(id);
@@ -149,7 +149,7 @@ namespace Store.App.Controllers
         [ClaimsAuthorize("Supplier", "Edit")]
         [Route("atualizar-endereco-fornecedor/{id:guid}")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateAddress(SupplierViewModel supplierViewModel)
         {
             ModelState.Remove("Name");
